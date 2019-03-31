@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on Laser Kittens</title>
+    <link>https://laserkittens.com/post/</link>
+    <description>Recent content in Posts on Laser Kittens</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>This work is licensed under a Creative Commons Attribution 4.0 International License.</copyright>
+    <lastBuildDate>Sun, 31 Mar 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://laserkittens.com/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Deobfuscating Clop ransomware resources</title>
+      <link>https://laserkittens.com/ransomware-sucks/</link>
+      <pubDate>Sun, 31 Mar 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://laserkittens.com/ransomware-sucks/</guid>
+      <description>A colleague and I reverse-engineered the Clop ransomware binary, and observed that it contained two obfuscated resources:
+ SIXSIX SIXSIX1  One of them is just the README file that the malware drops all over the disk, so nothing too exciting, but the other is a batch script that deletes the volume shadow copies. Granted, you could just debug it and get it to drop these files, but as a personal challenge I decided to write a deobfuscator based on my analysis of the decompiled code (I looked at it in both Ghidra and IDA Pro, the latter of which was much more helpful in this case).</description>
+    </item>
+    
+    <item>
+      <title>Learning a new programming language: Grokking syntax vs. paradigms</title>
+      <link>https://laserkittens.com/learning-new-programming-language/</link>
+      <pubDate>Sun, 31 Dec 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://laserkittens.com/learning-new-programming-language/</guid>
+      <description>My journey thus far I began programming in middle school in BASIC on a Radio Shack TRS-80 (&amp;ldquo;Trash 80&amp;rdquo;) that ran using two 5.25&amp;rdquo; floppy disks (to be fair, you pretty much had to learn BASIC in order to use the thing). I’m not that old, we simply didn’t have much money growing up so I got ancient computers from places like the Goodwill (the kind that were so old and junky people literally gave them away).</description>
+    </item>
+    
+    <item>
+      <title>Some reminders about Windows file times</title>
+      <link>https://laserkittens.com/reminders-about-windows-file-times/</link>
+      <pubDate>Mon, 21 Aug 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://laserkittens.com/reminders-about-windows-file-times/</guid>
+      <description>This information is covered in introductory courses on Windows/NTFS forensics, but I often lose track of the original source for technical information that I can cite in expert reports and other deliverables. Also, I’m not a fan of citing proprietary training materials that can’t be easily found on the web, purchased from Amazon, or found in a public library.
+This post is a quick summary of a few articles from Microsoft with links to the original articles.</description>
+    </item>
+    
+    <item>
+      <title>How I feel every time I want to learn something new</title>
+      <link>https://laserkittens.com/learn-something-new/</link>
+      <pubDate>Sun, 26 Jun 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://laserkittens.com/learn-something-new/</guid>
+      <description>It seems like many times when I try to learn something new, I find that I am missing some prerequisite knowledge or skill set that needs to be understood and/or mastered before I can proceed. This humorous comic illustrates this experience:
+http://abstrusegoose.com/272 Be sure to click on the actual comic to advance to the next scene.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <meta name="generator" content="Hugo 0.54.0" />
+  <link rel="canonical" href="https://laserkittens.com/learning-new-programming-language/">
+
+  
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#000000">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="theme-color" content="#ffffff">
+
+  <link rel="stylesheet" type="text/css" href="https://laserkittens.com/css/paper.css">
+
+  
+  
+  <link rel="stylesheet" type="text/css" href="https://laserkittens.com/css/custom.css">
+
+  
+  
+  <title>Learning a new programming language: Grokking syntax vs. paradigms | Laser Kittens</title>
+</head>
+  <body>
+    <div class="container paper">
+      <nav class="border split-nav">
+  <div class="nav-brand">
+    <h3><a href="/">Laser Kittens</a></h3>
+  </div>
+  <div class="collapsible">
+    <input id="collapsible1" type="checkbox" name="collapsible1">
+    <button>
+    <label for="collapsible1">
+        <div class="bar1"></div>
+        <div class="bar2"></div>
+        <div class="bar3"></div>
+      </label>
+    </button>
+    <div class="collapsible-body">
+      <ul class="inline">
+      
+        <li><a href="/">Blog</a></li>
+      
+        <li><a href="/tags/">Tags</a></li>
+      
+        <li><a href="/about/">About</a></li>
+      
+        <li><a href="/index.xml">RSS</a></li>
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+      <main>
+        
+
+<h1 class="post-title">Learning a new programming language: Grokking syntax vs. paradigms</h1>
+
+
+<strong>Publish date: </strong>Dec 31, 2017
+<br>
+
+  <strong>Tags: </strong>
+  
+    <a href="https://laserkittens.com/tags/computer-science">computer-science</a>
+  
+    <a href="https://laserkittens.com/tags/python">python</a>
+  
+    <a href="https://laserkittens.com/tags/golang">golang</a>
+  
+    <a href="https://laserkittens.com/tags/c">c</a>
+  
+    <a href="https://laserkittens.com/tags/c&#43;&#43;">c&#43;&#43;</a>
+  
+
+
+
+  
+
+<div class="child-borders">
+  <div class="toc border" aria-labelledby="toc-heading">
+    <h2 id="toc-heading">Table of contents</h2>
+    <ol>
+      
+        <li>
+          
+          
+          
+          
+          <a href="#my-journey-thus-far">
+            My journey thus far
+          </a>
+        </li>
+      
+        <li>
+          
+          
+          
+          
+          <a href="#pythonic-example">
+            “Pythonic” example
+          </a>
+        </li>
+      
+        <li>
+          
+          
+          
+          
+          <a href="#heritage-and-philosophy">
+            Heritage and philosophy
+          </a>
+        </li>
+      
+        <li>
+          
+          
+          
+          
+          <a href="#making-it-work-optimally">
+            Making it work… optimally
+          </a>
+        </li>
+      
+    </ol>
+  </div>
+</div>
+
+
+
+
+
+<h2 id="my-journey-thus-far">My journey thus far</h2>
+
+<p>I began programming in middle school in BASIC on a Radio Shack TRS-80 (&ldquo;Trash 80&rdquo;) that ran using two 5.25&rdquo; floppy disks (to be fair, <a href="http://baugues.com/trs-80">you pretty much <em>had</em> to learn BASIC in order to use the thing</a>). I’m not <em>that</em> old, we simply didn’t have much money growing up so I got ancient computers from places like the Goodwill (the kind that were so old and junky people literally gave them away). I was lucky to have a neighbor/babysitter that taught me the foundations of BASIC, and one of the benefits of learning old tech was that the (typically outdated) library books covered everything I was learning!</p>
+
+<p>Fast-forward more than two decades later and my journey has taken me from various flavors of BASIC all the way through HTML, CSS, JavaScript, PHP, Python, C, C++, SQL, C#, and more. Recently I decided to learn Go. I was torn between beginning to learn Rust or Go, but for reasons that I’ll spare you from, I ended up choosing Go.</p>
+
+<p>I watched various Pluralsight courses initially to get up and running, and now I’m reading through <a href="http://a.co/hTurKuE"><em>The Go Programming Language</em></a> by Donovan &amp; Kernighan (yes, <em>the</em> Kernighan from K&amp;R! And yes, I chose this book largely because of this co-author because I enjoyed <a href="http://a.co/cieatqR"><em>The C Programming Language</em></a>). The hardest part for me when transitioning between languages and when initially learning one is learning to <em>think</em> in that language. Go syntax is relatively easy because of my prior programming experience, but learning to think (and code) in Go paradigms will take some time.</p>
+
+<h2 id="pythonic-example">&ldquo;Pythonic&rdquo; example</h2>
+
+<p>An example from Python is in order since more readers will be familiar with that language.</p>
+
+<p>I learned to write simple for loops in C (and other C-like languages) using this basic pattern:</p>
+
+<pre><code>for (i = 0; i &lt; 10; i++) {
+    do_something(i);
+}
+</code></pre>
+
+<p>When I first learned Python, coming from C and other C-like languages, I wrote for loops like so:</p>
+
+<pre><code>i = 0
+while (i &lt; 10):
+    do_something(i)
+    i += 1
+</code></pre>
+
+<p>It works, but it&rsquo;s not <em>Pythonic</em>. I understood the language <em>syntax</em>, but this wasn’t the <em>optimal</em> way to do this in Python. As I learned more, I wrote:</p>
+
+<pre><code>for i in range(10):
+    do_something(i)
+</code></pre>
+
+<p>And then I later learned that in Python 2, <code>range</code> is not a generator function and actually allocates the entire range in memory, and began using <code>xrange</code> instead (which is no longer an issue in Python 3, you can just use <code>range</code> and you get this optimization by default).</p>
+
+<p>This transition didn’t happen overnight. It also didn’t happen <em>automatically</em> (nor auto-<em>magically</em> for that matter). I worked my way through multiple tutorials, solved coding challenges, read more experienced people’s code, read books about the language (<a href="http://a.co/hZUdsQF"><em>Professional Python</em></a> was especially helpful to me after I was comfortable with the basics), asked people for help, and <strong>spent a lot of time coding</strong> (with the last item in this list being the most important). I’ve since taught Python at a local university, which also was an educational experience <em>for me</em> as learning how to teach the language to students with no programming background also helped me think through what paradigms are important passing on vs. which just confuse newcomers with little gain.</p>
+
+<h2 id="heritage-and-philosophy">Heritage and philosophy</h2>
+
+<p>When I started learning BASIC as a kid, I just wanted to use my computer and be able to have fun with it (I made simple games and a program to track my family’s VHS, vinyl, and CD collection; the latter program had no persistent storage &mdash; program interruption meant total data loss!). When I learned HTML, I wanted to make a personal web page (on angelfire, w00t!). When I learned CSS, I wanted to make my web page prettier. When I learned JavaScript, I honestly just wanted to make an infinite loop of alert messages to annoy people. When I learned PHP, it was because I could only afford cheap shared hosting and I had finally determined that storing a password client-side in the page source using JavaScript was a bad idea (no matter how much I obfuscated it, disabled right-click, etc.).</p>
+
+<p>But when I first tried learning C++ (and failed), I became acutely aware that I was missing something. My brain was incapable of grokking the paradigms being taught at the time. It was also the first time I had tried learning a programming language solely from a book. And because of that, I read the preface and introduction to the book. This turned out to be eye-opening: it explained the <em>rationale</em> behind C++ and its <em>evolution</em> from C. This was the the first time I realized that programming languages have an underlying heritage and subsequent philosophy. Up until that point, I had only attempted to learn new languages because of the (perceived) limitations of the ones I already knew (or <em>thought</em> I knew).</p>
+
+<p>I also learned another valuable lesson: get help (from <em>people</em>, not just books/videos/tutorials). Unfortunately for me at the time, my parents had bought me my first C++ book at a garage sale and it was out of date. I could not get &ldquo;Hello, World&rdquo; to compile, which was incredibly frustrating. I was lucky to know someone who already knew the language (he had flippantly commented that I should learn C++, which was the only reason I knew of its existence as a kid). He pointed out that the language had since implemented namespaces, and to get the example in my book to work I had to add <code>using namespace std;</code> to my code (at the time I would not have grasped prefacing the identifiers with their respective namespace, eg., <code>std::cout</code>). What I probably would have never figured out on my own was explained to me (at least enough to move on from that example) in less than 5 minutes from someone with experience. I’ve not always had the luxury of people who could help me learn a language, but this is getting much better with <a href="https://stackoverflow.com/">Stack Overflow</a>, Slack communities dedicated to specific programming languages, <a href="https://www.codementor.io/">CodeMentor</a>, etc. (but I used to &mdash; and <em>still</em> &mdash; get a little help on IRC from time to time).</p>
+
+<p>If you learned C and then tried learning Java (but knew nothing except C paradigms), you might think Java is far too verbose and needlessly complicated. But that would be because you failed to grasp the object-oriented philosophy underlying Java. Conversely, if you went from Java to C, you’d lament the lack of garbage collection and limitations of structs (but fail to grasp the true <em>power</em> and <em>control</em> you have). Similarly, if you only knew Python and then tried learning any language without a <a href="https://wiki.python.org/moin/GlobalInterpreterLock">global interpreter lock (GIL)</a>, you might have trouble wrapping your head around concurrency, parallelism, and thread safety (which requires a little knowledge of computer/CPU architecture).</p>
+
+<p>Programming languages are generally created in an attempt to make the programmer’s life easier (with the exception of <a href="https://esolangs.org/wiki/Esoteric_programming_language">esoteric languages</a>). Understanding <em>where a language came from and why it was created</em> goes a long way towards understanding how to think in that language&rsquo;s paradigm(s).</p>
+
+<h2 id="making-it-work-optimally">Making it work… optimally</h2>
+
+<p>Fully understanding a language&rsquo;s ancestry and paradigm(s) is not necessary to use it. I don’t mean to insinuate that all Python coders need to <a href="https://github.com/python/cpython">read the source code for CPython</a>, but they should at least <a href="https://www.python.org/dev/peps/pep-0020/">read PEP 20</a> (type <code>import this</code> into the Python interpreter, then <code>import antigravity</code>).</p>
+
+<p>But understanding at least some of the heritage and philosophy behind a programming language will help approach problems more optimally in a given language (and perhaps know when a language is or isn’t well-suited for a task). Writing code using a different language’s paradigm may <em>work</em> (like my first attempt at a for loop in Python), but don’t stop there. You’re missing out on much more powerful paradigms that will help you more <em>optimally</em> solve problems in the language you’re using (and maybe even write less code and make your life easier in the process!).</p>
+
+<p>So here I am, learning Go. <a href="https://github.com/danzek/ctf-crypto-challenge">I decided to rewrite a program I helped write in Python for a crypto CTF challenge a while back</a>, which was a great learning experience (and it’s far from perfect!). But I have much more to learn — and always will. Onward ho until <a href="http://a.co/4dezO9d">I grok in fullness!</a></p>
+
+
+<hr />
+
+<sub><em>The opinions expressed on this blog are solely those of the author(s) &mdash; no one else's (e.g., not my employers'). Feel free to click on any links, but just know that I do not endorse, control, or promote third-party websites and I make no representations about their content. All data and information provided on this site is for informational purposes only. I make no representations as to accuracy, completeness, currentness, suitability, or validity of any information on this site and I will not be liable for any errors, omissions, or delays in this information or any losses, injuries, or damages arising from its display or use. All information is provided on an as-is basis.</em></sub>
+  
+
+      </main>
+      
+  
+
+  </div>
+  </body>
+</html>

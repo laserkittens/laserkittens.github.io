@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <meta name="generator" content="Hugo 0.54.0" />
+  <link rel="canonical" href="https://laserkittens.com/reminders-about-windows-file-times/">
+
+  
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#000000">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="theme-color" content="#ffffff">
+
+  <link rel="stylesheet" type="text/css" href="https://laserkittens.com/css/paper.css">
+
+  
+  
+  <link rel="stylesheet" type="text/css" href="https://laserkittens.com/css/custom.css">
+
+  
+  
+  <title>Some reminders about Windows file times | Laser Kittens</title>
+</head>
+  <body>
+    <div class="container paper">
+      <nav class="border split-nav">
+  <div class="nav-brand">
+    <h3><a href="/">Laser Kittens</a></h3>
+  </div>
+  <div class="collapsible">
+    <input id="collapsible1" type="checkbox" name="collapsible1">
+    <button>
+    <label for="collapsible1">
+        <div class="bar1"></div>
+        <div class="bar2"></div>
+        <div class="bar3"></div>
+      </label>
+    </button>
+    <div class="collapsible-body">
+      <ul class="inline">
+      
+        <li><a href="/">Blog</a></li>
+      
+        <li><a href="/tags/">Tags</a></li>
+      
+        <li><a href="/about/">About</a></li>
+      
+        <li><a href="/index.xml">RSS</a></li>
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+      <main>
+        
+
+<h1 class="post-title">Some reminders about Windows file times</h1>
+
+
+<strong>Publish date: </strong>Aug 21, 2017
+<br>
+
+  <strong>Tags: </strong>
+  
+    <a href="https://laserkittens.com/tags/windows">windows</a>
+  
+    <a href="https://laserkittens.com/tags/timestamps">timestamps</a>
+  
+    <a href="https://laserkittens.com/tags/ntfs">ntfs</a>
+  
+    <a href="https://laserkittens.com/tags/file-systems">file-systems</a>
+  
+
+
+
+  
+
+<div class="child-borders">
+  <div class="toc border" aria-labelledby="toc-heading">
+    <h2 id="toc-heading">Table of contents</h2>
+    <ol>
+      
+        <li>
+          
+          
+          
+          
+          <a href="#what-is-a-file-time">
+            What is a file time?
+          </a>
+        </li>
+      
+        <li>
+          
+          
+          
+          
+          <a href="#what-is-file-system-tunneling">
+            What is file system tunneling?
+          </a>
+        </li>
+      
+        <li>
+          
+          
+          
+          
+          <a href="#what-is-the-purpose-of-file-tunneling">
+            What is the purpose of file tunneling?
+          </a>
+        </li>
+      
+    </ol>
+  </div>
+</div>
+
+
+
+
+
+<p><em>This information is covered in introductory courses on Windows/NTFS forensics, but I often lose track of the original source for technical information that I can cite in expert reports and other deliverables. Also, I’m not a fan of citing proprietary training materials that can’t be easily found on the web, purchased from Amazon, or found in a public library.</em></p>
+
+<p><em>This post is a quick summary of a few articles from Microsoft with links to the original articles. I also save information like this in <a href="https://gist.github.com/danzek/624d5c3aaa349f0e846281c75c2ec371">my GitHub Gists</a> since URLs change/disappear over time and I’ve been burned way too many times by this (especially finding old forum posts that were once canonical on a subject but then disappeared &mdash; <a href="https://web.archive.org/web/20100331010118/http://www.iscers.com:80/viewtopic.php?f=90&amp;t=73">including my own</a>).</em></p>
+
+<hr />
+
+<h2 id="what-is-a-file-time">What is a file time?</h2>
+
+<p>A 64-bit timestamp that stores the number of 100-nanosecond intervals since midnight on January 1, 1601 UTC.</p>
+
+<p>Digital forensics practitioners need to be careful when making assertions about events on the basis of file times (this is true of all timestamps). We are dealing with an <em>approximation</em> of an event when describing activity and providing a file time. Granted, that approximation is often highly accurate; but according to <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms724290">Microsoft</a>,</p>
+
+<blockquote>
+<p>Time stamps are updated at various times and for various reasons. The only guarantee about a file time stamp is that the file time is correctly reflected when the handle that makes the change is closed.</p>
+</blockquote>
+
+<p>SOURCE: Microsoft, “File Times”, Windows Dev Center. Retrieved on August 21, 2017 from <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms724290">https://msdn.microsoft.com/en-us/library/windows/desktop/ms724290</a>.</p>
+
+<h2 id="what-is-file-system-tunneling">What is file system tunneling?</h2>
+
+<p>The Windows operating system caches file system metadata (FILE records for NTFS and directory entries for FAT) for a short time period after a file is deleted or renamed and will reuse/restore this metadata when a new file with that name is created/renamed shortly after.</p>
+
+<p>According to <a href="https://support.microsoft.com/en-us/help/172190/windows-nt-contains-file-system-tunneling-capabilities">Microsoft</a>,</p>
+
+<blockquote>
+<p>The idea is to mimic the behavior MS-DOS programs expect when they use the safe save method. They copy the modified data to a temporary file, delete the original and rename the temporary to the original. This should seem to be the original file when complete. Windows performs tunneling on both FAT and NTFS file systems to ensure long/short file names are retained when 16-bit applications perform this safe save operation.</p>
+</blockquote>
+
+<p>The file tunneling settings are controlled by the Windows Registry key <code>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem</code>.</p>
+
+<ul>
+<li>To increase the tunneling cache time, modify/add the DWORD value <code>MaximumTunnelEntryAgeInSeconds</code>. The default cache time is 15 seconds.</li>
+<li>To disable tunneling, modify/add the DWORD value <code>MaximumTunnelEntries</code> and set it to <code>0</code>.</li>
+</ul>
+
+<p>SOURCE: Microsoft, “Windows NT Contains File System Tunneling Capabilities”, KB Article 172190, Rev. 1 (October 23, 2008). Retrieved August 21, 2017 from <a href="https://support.microsoft.com/en-us/help/172190/windows-nt-contains-file-system-tunneling-capabilities">https://support.microsoft.com/en-us/help/172190/windows-nt-contains-file-system-tunneling-capabilities</a>.</p>
+
+<h2 id="what-is-the-purpose-of-file-tunneling">What is the purpose of file tunneling?</h2>
+
+<p>According to <a href="https://blogs.msdn.microsoft.com/oldnewthing/20050715-14/?p=34923/">Raymond Chen</a>,</p>
+
+<blockquote>
+<p>When you use a program to edit an existing file, then save it, you expect the original creation timestamp to be preserved, since you&rsquo;re editing a file, not creating a new one. But internally, many programs save a file by performing a combination of save, delete, and rename operations…, and without tunneling, the creation time of the file would seem to change even though from the end user&rsquo;s point of view, no file got created.</p>
+
+<p>As another example of the importance of tunneling, consider that file &ldquo;File with long name.txt&rdquo;, whose short name is say &ldquo;FILEWI~1.TXT&rdquo;. You load this file into a program that is not long-filename-aware and save it. It deletes the old &ldquo;FILEWI~1.TXT&rdquo; and creates a new one with the same name. Without tunnelling, the associated long name of the file would be lost. Instead of a friendly long name, the file name got corrupted into this thing with squiggly marks. Not good.</p>
+</blockquote>
+
+<p>SOURCE: Raymond Chen, &ldquo;The apocryphal history of file system tunnelling&rdquo;, Microsoft Developer Blog: The Old New Thing (July 15, 2005). Retrieved August 21, 2017 from <a href="https://blogs.msdn.microsoft.com/oldnewthing/20050715-14/?p=34923/">https://blogs.msdn.microsoft.com/oldnewthing/20050715-14/?p=34923/</a>.</p>
+
+<p>UPDATE: Another great source of information is <a href="http://windowsir.blogspot.com/2014/07/file-system-ops-effects-on-mft-records.html">Harlan Carvey’s blog post</a> where he does testing of file tunneling behavior (and he links to several other blog posts that do also).</p>
+
+
+<hr />
+
+<sub><em>The opinions expressed on this blog are solely those of the author(s) &mdash; no one else's (e.g., not my employers'). Feel free to click on any links, but just know that I do not endorse, control, or promote third-party websites and I make no representations about their content. All data and information provided on this site is for informational purposes only. I make no representations as to accuracy, completeness, currentness, suitability, or validity of any information on this site and I will not be liable for any errors, omissions, or delays in this information or any losses, injuries, or damages arising from its display or use. All information is provided on an as-is basis.</em></sub>
+  
+
+      </main>
+      
+  
+
+  </div>
+  </body>
+</html>

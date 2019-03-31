@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Reverse Engineering on Laser Kittens</title>
+    <link>https://laserkittens.com/tags/reverse-engineering/</link>
+    <description>Recent content in Reverse Engineering on Laser Kittens</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>This work is licensed under a Creative Commons Attribution 4.0 International License.</copyright>
+    <lastBuildDate>Sun, 31 Mar 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://laserkittens.com/tags/reverse-engineering/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Deobfuscating Clop ransomware resources</title>
+      <link>https://laserkittens.com/ransomware-sucks/</link>
+      <pubDate>Sun, 31 Mar 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://laserkittens.com/ransomware-sucks/</guid>
+      <description>A colleague and I reverse-engineered the Clop ransomware binary, and observed that it contained two obfuscated resources:
+ SIXSIX SIXSIX1  One of them is just the README file that the malware drops all over the disk, so nothing too exciting, but the other is a batch script that deletes the volume shadow copies. Granted, you could just debug it and get it to drop these files, but as a personal challenge I decided to write a deobfuscator based on my analysis of the decompiled code (I looked at it in both Ghidra and IDA Pro, the latter of which was much more helpful in this case).</description>
+    </item>
+    
+  </channel>
+</rss>
