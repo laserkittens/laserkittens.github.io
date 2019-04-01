@@ -23,6 +23,11 @@
   </url>
   
   <url>
+    <loc>https://laserkittens.com/big-ram-kernel-debugger-data-block/</loc>
+    <lastmod>2017-04-28T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://laserkittens.com/learn-something-new/</loc>
     <lastmod>2016-06-26T00:00:00+00:00</lastmod>
   </url>
@@ -75,6 +80,12 @@
   </url>
   
   <url>
+    <loc>https://laserkittens.com/tags/memory/</loc>
+    <lastmod>2017-04-28T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://laserkittens.com/tags/ntfs/</loc>
     <lastmod>2017-08-21T00:00:00+00:00</lastmod>
     <priority>0</priority>
@@ -99,6 +110,12 @@
   </url>
   
   <url>
+    <loc>https://laserkittens.com/tags/rekall/</loc>
+    <lastmod>2017-04-28T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://laserkittens.com/tags/reverse-engineering/</loc>
     <lastmod>2019-03-31T00:00:00+00:00</lastmod>
     <priority>0</priority>
@@ -113,6 +130,12 @@
   <url>
     <loc>https://laserkittens.com/tags/timestamps/</loc>
     <lastmod>2017-08-21T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://laserkittens.com/tags/volatility/</loc>
+    <lastmod>2017-04-28T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   

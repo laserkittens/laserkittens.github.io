@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <meta name="generator" content="Hugo 0.54.0" />
+  <link rel="canonical" href="https://laserkittens.com/big-ram-kernel-debugger-data-block/">
+
+  
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#000000">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="theme-color" content="#ffffff">
+
+  <link rel="stylesheet" type="text/css" href="https://laserkittens.com/css/paper.css">
+
+  
+  
+  <link rel="stylesheet" type="text/css" href="https://laserkittens.com/css/custom.css">
+
+  
+  
+  <title>Big RAM and the kernel debugger data block | Laser Kittens</title>
+</head>
+  <body>
+    <div class="container paper">
+      <nav class="border split-nav">
+  <div class="nav-brand">
+    <h3><a href="/">Laser Kittens</a></h3>
+  </div>
+  <div class="collapsible">
+    <input id="collapsible1" type="checkbox" name="collapsible1">
+    <button>
+    <label for="collapsible1">
+        <div class="bar1"></div>
+        <div class="bar2"></div>
+        <div class="bar3"></div>
+      </label>
+    </button>
+    <div class="collapsible-body">
+      <ul class="inline">
+      
+        <li><a href="/">Blog</a></li>
+      
+        <li><a href="/tags/">Tags</a></li>
+      
+        <li><a href="/about/">About</a></li>
+      
+        <li><a href="/index.xml">RSS</a></li>
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+      <main>
+        
+
+<h1 class="post-title">Big RAM and the kernel debugger data block</h1>
+
+
+<strong>Publish date: </strong>Apr 28, 2017
+<br>
+
+  <strong>Tags: </strong>
+  
+    <a href="https://laserkittens.com/tags/memory">memory</a>
+  
+    <a href="https://laserkittens.com/tags/volatility">volatility</a>
+  
+    <a href="https://laserkittens.com/tags/rekall">rekall</a>
+  
+    <a href="https://laserkittens.com/tags/windows">windows</a>
+  
+
+
+
+  
+
+
+
+<p>I recently was provided with a 64GB raw memory image created by the free DumpIt tool from
+a Windows 2012 R2 x64 server. To my dismay, neither Volatility nor Rekall could make heads
+or tails of it. After debugging a little further, I discovered that neither tool was able
+to find the kernel debugger data block (<code>_KDDEBUGGER_DATA64</code>) structure.</p>
+
+<p>After a lot of Googling and consultation of the handy bible on this subject matter,
+<a href="http://a.co/azFkE04"><em>The Art of Memory Forensics</em></a>, I think I finally understand what
+went wrong (but I’m eagerly seeking clarification/correction from the DFIR/infosec
+community if I’m mistaken!).</p>
+
+<p>When Volatility attempts to make sense of a Windows 64-bit RAM dump, they use the global
+variable <code>PsActiveProcessHead</code>, which is a pointer to the kernel’s list of <code>_EPROCESS</code>
+structures (and other global variables such as <code>PsLoadedModuleList</code>, which is a pointer
+to the kernel’s list of drivers). Since these variables (symbols) are not exported by the
+kernel, they can’t simply be looked up in <code>ntoskrnl</code>. “Profiles” in tools such as
+Volatility contain hard-coded addresses where it can expect to find such variables in
+specific versions of Windows with specific patches/hotfixes applied (and so it knows which
+symbols, data structures, and algorithms to use when parsing).</p>
+
+<p>Within the Kernel Processor Control Region (KPCR) data structure there is a field that
+contains a pointer to a <code>_DBGKD_GET_VERSION64</code> structure which contains a linked list of
+<code>_KDDEBUGGER_DATA64</code> structures (kernel debugger data blocks). According to <a href="http://a.co/azFkE04">
+<em>The Art of Memory Forensics</em></a>,</p>
+
+<blockquote>
+<p>&ldquo;The debugger data structure is typically located inside the NT kernel module
+(<code>nt!KdDebuggerDataBlock</code>). It contains a build string such as
+<code>3790.srv03_sp2_rtm.070216-1710</code>, numerical values that indicate the major and minor build
+numbers, and the service pack level for the target operating system&hellip;. [T]he debugger
+data block also contains pointers to the start of the active process and loaded module
+lists&hellip;. Volatility scans for the <code>_KDDEBUGGER_DATA64</code> by looking for constant values
+embedded in the structure, including the hard-coded 4-byte signature of KDBG&hellip;.
+Additionally, in some cases there may be more than one <code>_KDDEBUGGER_DATA64</code> structure
+resident in physical memory. This can happen if the target system hasn’t rebooted since
+applying a hot patch that updated some kernel files, or if the machine rebooted so quickly
+that the entire contents of RAM was not flushed&hellip;. [M]any Volatility plugins rely on
+finding the debugger data block and then walking the active process and loaded module
+lists&rdquo; (pp. 62–65).</p>
+</blockquote>
+
+<p>The kernel debugger data block is used by the kernel debugger so that it can find active
+processes, handles to objects, loaded modules, etc. when figuring out the cause of a
+crash. The data in this structure is relatively stable so that Windows (and tools such as
+WinDbg) can find them, so the memory addresses of many kernel variables can be readily
+identified using this structure. This makes it very handy for memory forensics.</p>
+
+<p>However, the kernel debugger data block is encoded on some 64-bit versions of Windows
+Vista and later with large amounts of RAM and some tools do not properly decode it when
+creating a raw memory image (such as DumpIt). DumpIt only properly decodes this structure
+when a crashdump is taken (rather than a raw image). Takahiro Haruyama explains this in
+detail <a href="https://takahiroharuyama.github.io/blog/2014/01/07/64bit-big-size-ram-acquisition-problem/">in a blog post he wrote in 2014 entitled &ldquo;64bit Big Sized RAM Image Acquisition
+Problem&rdquo;</a>
+(he used the term &ldquo;encrypted&rdquo; rather than &ldquo;encoded&rdquo;, but the latter term is <a href="https://volatility-labs.blogspot.com/2014/01/the-secret-to-64-bit-windows-8-and-2012.html">used by
+Volatility in a blog post referencing Haruyama’s post</a>
+so I’ve elected to echo that language).</p>
+
+<p>As a result, if using DumpIt, you must take a crashdump rather than a raw image. As of the
+time that Haruyama wrote his post in early 2014, this was the only supported tool that he
+tested. <strong>However, I was able to successfully acquire and analyze the RAM in AFF4 format
+using winpmem 2.1.post4 and Rekall 1.6.0 (Gotthard), respectively</strong> (your mileage may
+vary). This is because <em>Rekall no longer relies on the kernel debugger data block to i
+dentify the necessary global variables/symbols</em>. According to
+<a href="http://www.rekall-forensic.com/docs/Manual/Plugins/Windows/#kdbgscan">the Rekall documentation</a>,</p>
+
+<blockquote>
+<p>&ldquo;Rekall no longer uses the Kernel Debugger Block for analysis — instead accurate global
+symbol information are fetched from Microsoft PDB files containing debugging symbols.&rdquo;</p>
+</blockquote>
+
+<p>It was a good learning experience and now I know to be wary of certain collection tools
+when collecting large amounts of RAM from Windows 64-bit Vista+ systems! I figured I’d
+share the lesson. I must also give
+<a href="http://www.brimorlabsblog.com/2014/01/all-memory-dumping-tools-are-not-same.html">credit to Brian Moran as his blog post on this issue</a>
+was my first stop when Googling this issue and was very helpful as I researched this (he
+also ran into this issue in 2014).</p>
+
+<p><strong>UPDATE:</strong> UPDATE: After posting this on Twitter, <a href="https://twitter.com/brianjmoran/status/858030064788803584">Brian shared his experience</a>
+with another tool that he has had success with: <a href="https://belkasoft.com/ram-capturer">Belkasoft RAM Capturer.</a></p>
+
+
+<hr />
+
+<p><sub><em>The opinions expressed on this blog are solely those of the author(s) &mdash; no one else's (e.g., not my employers'). Feel free to click on any links, but just know that I do not endorse, control, or promote third-party websites and I make no representations about their content. All data and information provided on this site is for informational purposes only. I make no representations as to accuracy, completeness, currentness, suitability, or validity of any information on this site and I will not be liable for any errors, omissions, or delays in this information or any losses, injuries, or damages arising from its display or use. All information is provided on an as-is basis.</em></sub></p>
+
+<p><sub>Copyright &copy; 2016&ndash;<script>document.write(new Date().getFullYear())</script> laserkittens.com.</sub></p>
+
+<p><sub><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/80x15.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.</sub></p>
+
+
+      </main>
+      
+  
+
+  </div>
+  </body>
+</html>

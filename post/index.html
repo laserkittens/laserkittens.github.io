@@ -93,6 +93,16 @@ This post is a quick summary of a few articles from Microsoft with links to the 
   
 
   <h2 class="post-list summary">
+    <a href="https://laserkittens.com/big-ram-kernel-debugger-data-block/">
+      Big RAM and the kernel debugger data block
+    </a>
+  </h2>
+  
+    I recently was provided with a 64GB raw memory image created by the free DumpIt tool from a Windows 2012 R2 x64 server. To my dismay, neither Volatility nor Rekall could make heads or tails of it. After debugging a little further, I discovered that neither tool was able to find the kernel debugger data block (_KDDEBUGGER_DATA64) structure.
+After a lot of Googling and consultation of the handy bible on this subject matter, The Art of Memory Forensics, I think I finally understand what went wrong (but I’m eagerly seeking clarification/correction from the DFIR/infosec community if I’m mistaken!
+  
+
+  <h2 class="post-list summary">
     <a href="https://laserkittens.com/learn-something-new/">
       How I feel every time I want to learn something new
     </a>
