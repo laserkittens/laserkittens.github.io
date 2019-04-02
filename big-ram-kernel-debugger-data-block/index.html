@@ -105,8 +105,7 @@ symbols, data structures, and algorithms to use when parsing).</p>
 
 <p>Within the Kernel Processor Control Region (KPCR) data structure there is a field that
 contains a pointer to a <code>_DBGKD_GET_VERSION64</code> structure which contains a linked list of
-<code>_KDDEBUGGER_DATA64</code> structures (kernel debugger data blocks). According to <a href="http://a.co/azFkE04">
-<em>The Art of Memory Forensics</em></a>,</p>
+<code>_KDDEBUGGER_DATA64</code> structures (kernel debugger data blocks). According to <a href="http://a.co/azFkE04"><em>The Art of Memory Forensics</em></a>,</p>
 
 <blockquote>
 <p>&ldquo;The debugger data structure is typically located inside the NT kernel module
@@ -144,9 +143,7 @@ so I’ve elected to echo that language).</p>
 time that Haruyama wrote his post in early 2014, this was the only supported tool that he
 tested. <strong>However, I was able to successfully acquire and analyze the RAM in AFF4 format
 using winpmem 2.1.post4 and Rekall 1.6.0 (Gotthard), respectively</strong> (your mileage may
-vary). This is because <em>Rekall no longer relies on the kernel debugger data block to i
-dentify the necessary global variables/symbols</em>. According to
-<a href="http://www.rekall-forensic.com/docs/Manual/Plugins/Windows/#kdbgscan">the Rekall documentation</a>,</p>
+vary). This is because <em>Rekall no longer relies on the kernel debugger data block to identify the necessary global variables/symbols</em>. According to <a href="http://www.rekall-forensic.com/docs/Manual/Plugins/Windows/#kdbgscan">the Rekall documentation</a>,</p>
 
 <blockquote>
 <p>&ldquo;Rekall no longer uses the Kernel Debugger Block for analysis — instead accurate global
